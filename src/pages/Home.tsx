@@ -5,6 +5,7 @@ import VisualizationPanel from '../components/VisualizationPanel';
 import MemoryCard from '../components/MemoryCard';
 import MemoryModal from '../components/MemoryModal';
 import MemoryCalendar from '../components/MemoryCalendar';
+import ColorWall from '../components/ColorWall';
 import { useMemoryStore } from '../store/memoryStore';
 import type { Filters } from '../utils/helpers';
 import { filterMemories, generateScentInspiration, type ScentInspiration } from '../utils/helpers';
@@ -57,6 +58,8 @@ export default function Home() {
     () => filterMemories(memories, filters),
     [memories, filters],
   );
+
+  const hasActiveFilters = !!(filters.smellType || filters.season || filters.emotion);
 
   const handleFilterChange = (key: keyof Filters, value: string) => {
     setFilters((f) => ({ ...f, [key]: value }));
@@ -154,12 +157,12 @@ export default function Home() {
                 <div className="bg-paper-50/70 backdrop-blur rounded-3xl border-2 border-dashed border-paper-400 py-20 text-center">
                   <div className="text-6xl mb-4 select-none">🍂</div>
                   <h3 className="font-serif text-2xl text-ink-800 mb-2">
-                    {(filters.smellType || filters.season || filters.emotion)
+                    {hasActiveFilters
                       ? '没有匹配的气味记忆'
                       : '还没有封存任何气味'}
                   </h3>
                   <p className="text-ink-700/60 max-w-md mx-auto mb-6">
-                    {(filters.smellType || filters.season || filters.emotion)
+                    {hasActiveFilters
                       ? '换一组筛选条件试试？或者先封存一段新的气味'
                       : '空气中一定有让你难忘的味道——无论是衣柜里的樟木香，还是雨后操场的青草气'}
                   </p>
@@ -167,7 +170,7 @@ export default function Home() {
                     <button onClick={openAddModal} className="btn-primary">
                       封存第一段气味
                     </button>
-                    {(filters.smellType || filters.season || filters.emotion) && (
+                    {hasActiveFilters && (
                       <button onClick={resetFilters} className="btn-secondary">
                         清除筛选条件
                       </button>
@@ -192,12 +195,30 @@ export default function Home() {
               )}
             </section>
           </>
-        ) : (
+        ) : viewMode === 'calendar' ? (
           <MemoryCalendar
             memories={memories}
             onSelectMemory={scrollToCard}
             onSwitchToList={() => setViewMode('list')}
           />
+        ) : (
+          <>
+            <FilterPanel
+              filters={filters}
+              onChange={handleFilterChange}
+              onReset={resetFilters}
+              resultCount={filteredMemories.length}
+            />
+            <section className="mt-6">
+              <ColorWall
+                memories={filteredMemories}
+                onSelect={scrollToCard}
+                onAdd={openAddModal}
+                onResetFilters={resetFilters}
+                hasActiveFilters={hasActiveFilters}
+              />
+            </section>
+          </>
         )}
       </main>
 

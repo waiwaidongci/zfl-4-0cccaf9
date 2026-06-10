@@ -1,6 +1,6 @@
-import { Plus, BookOpenCheck, Calendar, Dices } from 'lucide-react';
+import { Plus, BookOpenCheck, Calendar, Dices, Palette } from 'lucide-react';
 
-export type ViewMode = 'list' | 'calendar';
+export type ViewMode = 'list' | 'calendar' | 'colorwall';
 
 interface Props {
   onAdd: () => void;
@@ -61,6 +61,17 @@ export default function Header({ onAdd, onInspire, memoryCount, viewMode, onView
               >
                 <Calendar className="w-4 h-4" />
                 记忆日历
+              </button>
+              <button
+                onClick={() => onViewChange('colorwall')}
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  viewMode === 'colorwall'
+                    ? 'bg-ochre-500 text-paper-50 shadow-sm'
+                    : 'text-ink-700 hover:text-ink-800 hover:bg-paper-200/60'
+                }`}
+              >
+                <Palette className="w-4 h-4" />
+                颜色气味墙
               </button>
             </div>
             <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2">
