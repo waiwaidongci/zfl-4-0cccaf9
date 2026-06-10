@@ -77,3 +77,70 @@ export function isLightColor(hex: string): boolean {
 export function contrastTextColor(hex: string): string {
   return isLightColor(hex) ? '#2A2118' : '#FBF7EE';
 }
+
+export function formatDateShort(iso: string): string {
+  const d = new Date(iso);
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${m}.${day}`;
+}
+
+export function formatTime(iso: string): string {
+  const d = new Date(iso);
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}`;
+}
+
+export function getDateKey(iso: string): string {
+  const d = new Date(iso);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+export function isSameDay(iso1: string, iso2: string): boolean {
+  return getDateKey(iso1) === getDateKey(iso2);
+}
+
+export function isSameMonth(year: number, month: number, iso: string): boolean {
+  const d = new Date(iso);
+  return d.getFullYear() === year && d.getMonth() === month;
+}
+
+export function getMonthMatrix(year: number, month: number): (Date | null)[][] {
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startWeekday = firstDay.getDay();
+  const daysInMonth = lastDay.getDate();
+
+  const matrix: (Date | null)[][] = [];
+  let week: (Date | null)[] = [];
+
+  for (let i = 0; i < startWeekday; i++) {
+    week.push(null);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    week.push(new Date(year, month, day));
+    if (week.length === 7) {
+      matrix.push(week);
+      week = [];
+    }
+  }
+
+  if (week.length > 0) {
+    while (week.length < 7) {
+      week.push(null);
+    }
+    matrix.push(week);
+  }
+
+  return matrix;
+}
+
+export function formatMonthLabel(year: number, month: number): string {
+  const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+  return `${year}年 ${months[month]}`;
+}

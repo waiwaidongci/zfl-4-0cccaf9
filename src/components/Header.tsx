@@ -1,11 +1,15 @@
-import { Plus } from 'lucide-react';
+import { Plus, BookOpenCheck, Calendar } from 'lucide-react';
+
+export type ViewMode = 'list' | 'calendar';
 
 interface Props {
   onAdd: () => void;
   memoryCount: number;
+  viewMode: ViewMode;
+  onViewChange: (mode: ViewMode) => void;
 }
 
-export default function Header({ onAdd, memoryCount }: Props) {
+export default function Header({ onAdd, memoryCount, viewMode, onViewChange }: Props) {
   return (
     <header className="relative pt-14 pb-8 md:pt-20 md:pb-12">
       <div className="container max-w-6xl">
@@ -33,15 +37,41 @@ export default function Header({ onAdd, memoryCount }: Props) {
               </span>
             </div>
           </div>
-          <button
-            onClick={onAdd}
-            className="group relative inline-flex items-center justify-center gap-2 bg-ochre-500 hover:bg-ochre-600 active:bg-ochre-700 text-paper-50 font-medium rounded-2xl px-6 py-3.5 shadow-paper hover:shadow-paper-hover hover:-translate-y-1 transition-all duration-250 self-start md:self-auto"
-          >
-            <span className="absolute inset-0 rounded-2xl opacity-20"
-              style={{ background: 'radial-gradient(circle at 20% 20%, #fff 0%, transparent 60%)' }} />
-            <Plus className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" strokeWidth={2.5} />
-            <span className="font-serif text-lg">封存一段气味</span>
-          </button>
+          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3">
+            <div className="inline-flex items-center rounded-xl border border-paper-300 bg-paper-100/80 p-1 shadow-sm">
+              <button
+                onClick={() => onViewChange('list')}
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  viewMode === 'list'
+                    ? 'bg-ochre-500 text-paper-50 shadow-sm'
+                    : 'text-ink-700 hover:text-ink-800 hover:bg-paper-200/60'
+                }`}
+              >
+                <BookOpenCheck className="w-4 h-4" />
+                档案列表
+              </button>
+              <button
+                onClick={() => onViewChange('calendar')}
+                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  viewMode === 'calendar'
+                    ? 'bg-ochre-500 text-paper-50 shadow-sm'
+                    : 'text-ink-700 hover:text-ink-800 hover:bg-paper-200/60'
+                }`}
+              >
+                <Calendar className="w-4 h-4" />
+                记忆日历
+              </button>
+            </div>
+            <button
+              onClick={onAdd}
+              className="group relative inline-flex items-center justify-center gap-2 bg-ochre-500 hover:bg-ochre-600 active:bg-ochre-700 text-paper-50 font-medium rounded-2xl px-6 py-3.5 shadow-paper hover:shadow-paper-hover hover:-translate-y-1 transition-all duration-250 self-start md:self-auto"
+            >
+              <span className="absolute inset-0 rounded-2xl opacity-20"
+                style={{ background: 'radial-gradient(circle at 20% 20%, #fff 0%, transparent 60%)' }} />
+              <Plus className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" strokeWidth={2.5} />
+              <span className="font-serif text-lg">封存一段气味</span>
+            </button>
+          </div>
         </div>
         <div className="mt-8 h-px w-full" style={{ background: 'linear-gradient(90deg, transparent 0%, #CBB993 20%, #CBB993 80%, transparent 100%)' }} />
       </div>
