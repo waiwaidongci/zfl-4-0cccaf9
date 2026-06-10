@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Dices } from 'lucide-react';
 import type { SmellMemory, Season, SmellType, Emotion } from '../utils/constants';
 import { SEASONS, SMELL_TYPES, EMOTIONS } from '../utils/constants';
 import type { MemoryInput } from '../store/memoryStore';
+import type { ScentInspiration } from '../utils/helpers';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: MemoryInput) => void;
   editingData: SmellMemory | null;
+  prefillData?: ScentInspiration | null;
 }
 
 const defaultForm: MemoryInput = {
@@ -27,7 +29,7 @@ const defaultForm: MemoryInput = {
 const intensityTicks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const humidityTicks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-export default function MemoryModal({ isOpen, onClose, onSubmit, editingData }: Props) {
+export default function MemoryModal({ isOpen, onClose, onSubmit, editingData, prefillData }: Props) {
   const [form, setForm] = useState<MemoryInput>(defaultForm);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +39,17 @@ export default function MemoryModal({ isOpen, onClose, onSubmit, editingData }: 
         const { id, created_at, updated_at, ...rest } = editingData;
         void id; void created_at; void updated_at;
         setForm(rest);
+      } else if (prefillData) {
+        const smellTypeInfo = SMELL_TYPES.find(s => s.value === prefillData.smell_type)!;
+        setForm({
+          ...defaultForm,
+          season: prefillData.season,
+          smell_type: prefillData.smell_type,
+          emotion: prefillData.emotion,
+          intensity: prefillData.intensity,
+          humidity: prefillData.humidity,
+          color_association: smellTypeInfo.color,
+        });
       } else {
         setForm(defaultForm);
       }
@@ -45,7 +58,7 @@ export default function MemoryModal({ isOpen, onClose, onSubmit, editingData }: 
       document.body.style.overflow = '';
     }
     return () => { document.body.style.overflow = ''; };
-  }, [isOpen, editingData]);
+  }, [isOpen, editingData, prefillData]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -98,6 +111,22 @@ export default function MemoryModal({ isOpen, onClose, onSubmit, editingData }: 
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {prefillData && !editingData && (
+            <div className="bg-lavender-300/20 border border-lavender-300/40 rounded-2xl p-4 flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-lavender-400/20 flex items-center justify-center text-lavender-600 shrink-0">
+                <Dices className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-serif text-base font-semibold text-ink-800">
+                  🎲 灵感抽签预填
+                </h4>
+                <p className="text-sm text-ink-700/70 mt-0.5">
+                  下面的感官属性已根据灵感抽签预填好了，你可以直接使用，也可以自由修改任何选项～
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div className="flex items-center gap-2 pb-2 border-b border-paper-200">
               <span className="w-1.5 h-6 bg-ochre-500 rounded-full" />

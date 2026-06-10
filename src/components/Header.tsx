@@ -1,15 +1,16 @@
-import { Plus, BookOpenCheck, Calendar } from 'lucide-react';
+import { Plus, BookOpenCheck, Calendar, Dices } from 'lucide-react';
 
 export type ViewMode = 'list' | 'calendar';
 
 interface Props {
   onAdd: () => void;
+  onInspire: () => void;
   memoryCount: number;
   viewMode: ViewMode;
   onViewChange: (mode: ViewMode) => void;
 }
 
-export default function Header({ onAdd, memoryCount, viewMode, onViewChange }: Props) {
+export default function Header({ onAdd, onInspire, memoryCount, viewMode, onViewChange }: Props) {
   return (
     <header className="relative pt-14 pb-8 md:pt-20 md:pb-12">
       <div className="container max-w-6xl">
@@ -62,15 +63,24 @@ export default function Header({ onAdd, memoryCount, viewMode, onViewChange }: P
                 记忆日历
               </button>
             </div>
-            <button
-              onClick={onAdd}
-              className="group relative inline-flex items-center justify-center gap-2 bg-ochre-500 hover:bg-ochre-600 active:bg-ochre-700 text-paper-50 font-medium rounded-2xl px-6 py-3.5 shadow-paper hover:shadow-paper-hover hover:-translate-y-1 transition-all duration-250 self-start md:self-auto"
-            >
-              <span className="absolute inset-0 rounded-2xl opacity-20"
-                style={{ background: 'radial-gradient(circle at 20% 20%, #fff 0%, transparent 60%)' }} />
-              <Plus className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" strokeWidth={2.5} />
-              <span className="font-serif text-lg">封存一段气味</span>
-            </button>
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2">
+              <button
+                onClick={onInspire}
+                className="group relative inline-flex items-center justify-center gap-2 bg-lavender-400/80 hover:bg-lavender-500 active:bg-lavender-600 text-paper-50 font-medium rounded-2xl px-5 py-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-250 self-start md:self-auto border border-lavender-500/30"
+              >
+                <Dices className="w-5 h-5 transition-transform duration-300 group-hover:rotate-180" />
+                <span className="font-serif">气味灵感抽签</span>
+              </button>
+              <button
+                onClick={onAdd}
+                className="group relative inline-flex items-center justify-center gap-2 bg-ochre-500 hover:bg-ochre-600 active:bg-ochre-700 text-paper-50 font-medium rounded-2xl px-6 py-3.5 shadow-paper hover:shadow-paper-hover hover:-translate-y-1 transition-all duration-250 self-start md:self-auto"
+              >
+                <span className="absolute inset-0 rounded-2xl opacity-20"
+                  style={{ background: 'radial-gradient(circle at 20% 20%, #fff 0%, transparent 60%)' }} />
+                <Plus className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" strokeWidth={2.5} />
+                <span className="font-serif text-lg">封存一段气味</span>
+              </button>
+            </div>
           </div>
         </div>
         <div className="mt-8 h-px w-full" style={{ background: 'linear-gradient(90deg, transparent 0%, #CBB993 20%, #CBB993 80%, transparent 100%)' }} />

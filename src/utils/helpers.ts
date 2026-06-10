@@ -1,4 +1,5 @@
-import type { SmellMemory } from './constants';
+import type { SmellMemory, Season, SmellType, Emotion } from './constants';
+import { SEASONS, SMELL_TYPES, EMOTIONS } from './constants';
 
 export function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
@@ -143,4 +144,46 @@ export function getMonthMatrix(year: number, month: number): (Date | null)[][] {
 export function formatMonthLabel(year: number, month: number): string {
   const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
   return `${year}年 ${months[month]}`;
+}
+
+export interface ScentInspiration {
+  season: Season;
+  smell_type: SmellType;
+  emotion: Emotion;
+  intensity: number;
+  humidity: number;
+  prompt: string;
+}
+
+function randomFrom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function generateScentInspiration(): ScentInspiration {
+  const season = randomFrom(SEASONS);
+  const smellType = randomFrom(SMELL_TYPES);
+  const emotion = randomFrom(EMOTIONS);
+  const intensity = randomInt(3, 9);
+  const humidity = randomInt(2, 9);
+
+  const prompts = [
+    `想象一个${season.emoji}${season.label}日的午后，空气中弥漫着${smellType.emoji}${smellType.label}调的气息，让你感到${emotion.emoji}${emotion.label}……`,
+    `某个${season.label}天的傍晚，一阵${smellType.label}袭来，${emotion.label}的情绪涌上心头，去记录下这个瞬间吧！`,
+    `${season.emoji} 在${season.label}的街角，偶遇一缕${smellType.emoji}${smellType.label}，唤起了${emotion.label}的心情，这会是怎样的故事呢？`,
+    `推开一扇${season.label}的窗，${smellType.emoji}${smellType.label}飘了进来，${emotion.label}的记忆就此开启……`,
+    `记录一段${season.label}的${smellType.label}，强度${intensity}/10，搭配${emotion.label}的心情，会是什么味道？`,
+  ];
+
+  return {
+    season: season.value,
+    smell_type: smellType.value,
+    emotion: emotion.value,
+    intensity,
+    humidity,
+    prompt: randomFrom(prompts),
+  };
 }
